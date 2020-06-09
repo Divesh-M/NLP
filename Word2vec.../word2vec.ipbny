@@ -1,0 +1,57 @@
+import re
+import nltk
+from gensim.models import Word2Vec
+from nltk.corpus import stopwords
+
+import pandas as pd
+
+data = pd.read_csv("ramayana.csv")
+
+data
+
+data.isna().sum()
+
+data = data.dropna(axis = 0)
+
+
+data.isna().sum()
+
+
+data.shape
+
+data.describe()
+
+# Preprocessing the data
+text = re.sub(r'\[[0-9]*\]',' ',str(data))
+text = re.sub(r'\s+',' ',text)
+text = text.lower()
+text = re.sub(r'\d',' ',text)
+text = re.sub(r'\s+',' ',text)
+
+sentences = nltk.sent_tokenize(text)
+
+sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
+
+sentences
+
+for i in range(len(sentences)):
+    sentences[i] = [word for word in sentences[i] if word not in stopwords.words('english') ]
+
+
+sentences
+
+# Training the Word2Vec model
+model = Word2Vec(sentences, min_count=1)
+
+words = model.wv.vocab
+
+# Finding Word Vectors
+vector = model.wv['ramayana']
+
+vector
+
+# Most similar words
+similar = model.wv.most_similar('ramayana')
+
+similar
+
